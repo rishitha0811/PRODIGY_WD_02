@@ -1,44 +1,30 @@
+index.html
+<!DOCTYPE html>
 <html lang="en">
- 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="style.css">
-  <title>Stopwatch App</title>
+    <meta charset="UTF-8">
+    <title>Stopwatch Web App</title>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="./styles.css">
 </head>
- 
 <body>
-    <div class="container">
-      <h1>StopWatch</h1>
+    <div class="wrap">
+        <div id="timer">
+            <span id="hours">00</span> :
+            <span id="minutes">00</span> :
+            <span id="seconds">00</span> :
+            <span id="milliseconds">00</span>
+        </div>
+        <p>Your time starts now</p>
+        <div class="option">
+            <a id="play" onclick="playPauseFunc();" href="javascript:void(0)"><i class="fa fa-play"></i></a>
+            <a id="lap" onclick="lapFunc();" href="javascript:void(0)"><i class="fa fa-plus"></i></a>
+            <a id="reset" onclick="resetFunc();" href="javascript:void(0)"><i class="fa fa-undo"></i></a>
+        </div>
+        <div id="laps"></div>
     </div>
-    <div class="container">
-      <div class="row stopwatch">
-        <div class="col center-text">
-          <p id="hours">00
-          </p> :
-        </div>
-        <div class="col center-text">
-          <p id="minutes">00
-          </p>:
-        </div>
-        <div class="col center-text">
-          <p id="seconds">00
-          </p>:
-        </div>
-        <div class="col center-text">
-          <p id="milliseconds">00
-          </p>
-        </div>
-      </div>
-      <div class="row buttons">
-        <div class="col">
-          <button onclick="startWatch()" class="btn start" id="stopwatch">Start</button>
-          <button onclick="stopWatch()" class="btn stop" id="stopwatch">Stop</button>
-          <button onclick="resetWatch()" class="btn reset" id="resetwatch">Reset</button>
-        </div>
-      </div>
-    </div>
-  <script type='text/javascript' src="script.js"></script>
+    <script src="./script.js"></script>
 </body>
- 
 </html>
