@@ -1,73 +1,87 @@
-const hoursEl = document.getElementById('hours');
-const minutesEl = document.getElementById('minutes');
-const secondsEl = document.getElementById('seconds');
-const milliseconds = document.getElementById('milliseconds');
- 
- 
-let stopIntervalId; //value to track interval
-let nowDate; //to track time
-let carry = 0; // carry over value needed while working with time
- 
-//updates the time in stopwatch
-function updateTime() {
- 
-    milliseconds.innerText = formatTime(parseMilliseconds
-    (parseInt(milliseconds.innerText)+1));
-    secondsEl.innerText = formatTime(addTime(parseInt(secondsEl.innerText)+carry));
-    minutesEl.innerText = formatTime(parseInt(minutesEl.innerText)+carry);
-    hoursEl.innerText = formatTime(parseInt(hoursEl.innerText)+carry);
-}
- 
-//parse lowest second interval we have to second 
-function parseMilliseconds(time) {
-    carry = 0;
-    if(time > 99) {
-        carry = 1;
-        return 0;
-    } else {
-        return time;
+$(document).ready(function () {
+    let running = false;
+    let startTime, elapsedTime = 0, interval, animateCircleInterval;
+    let duration = {
+        h: 0,
+        m: 0,
+        s: 0,
+        ms: 0
+    };
+    let lapCount = 1;
+
+    function pad(num, size) {
+        var s = "0000" + num;
+        return s.substr(s.length - size);
     }
-}
- 
-//update second, minutes and hours as it hits 60
-function addTime(time) {
-    carry = 0;
-    if(time > 59) {
-        carry = 1;
-        return 0;
-    } else {
-        return time;
+
+    function updateDisplay() {
+        duration.h = Math.floor(elapsedTime / 3600000);
+        duration.m = Math.floor((elapsedTime % 3600000) / 60000);
+        duration.s = Math.floor((elapsedTime % 60000) / 1000);
+        duration.ms = elapsedTime % 1000;
+
+        $("#hours").text(pad(duration.h, 2));
+        $("#minutes").text(pad(duration.m, 2));
+        $("#seconds").text(pad(duration.s, 2));
+        $("#milliseconds").text(pad(duration.ms, 3));
     }
-}
+
+    function animateCircle() {
+       // add colour if needed
+    }
+
+    function startTimer() {
+        startTime = new Date();
+        interval = setInterval(function () {
+            var currentTime = new Date();
+            elapsedTime += currentTime - startTime;
+            startTime = currentTime;
+            updateDisplay();
+            animateCircle();
+        }, 10);
+    }
+
+    function stopTimer() {
+        clearInterval(interval);
+    }
+
+    window.playPauseFunc = function () {
+        if (running) {
+            stopTimer();
+            $('#play').html('<i class="fa fa-play"></i>');
+        } else {
+            startTimer();
+            $('#play').html('<i class="fa fa-pause"></i>');
+        }
+        running = !running;
+    };
+
+    window.lapFunc = function() {
+        if (running) {
+            let lapTime = elapsedTime;
+            let lapHours = pad(Math.floor(lapTime / 3600000), 2);
+            let lapMinutes = pad(Math.floor((lapTime % 3600000) / 60000), 2);
+            let lapSeconds = pad(Math.floor((lapTime % 60000) / 1000), 2);
+            let lapMilliseconds = pad(lapTime % 1000, 3);
+            let lapDisplay = `${lapCount}. ${lapHours}:${lapMinutes}:${lapSeconds}:${lapMilliseconds}`;
+            $('#laps').append(`<div>${lapDisplay}</div>`);
+            lapCount++;
+        }
+    };
+
  
-//start the watch
-function startWatch() {
-     //this commented code is to fix the bug when you click start button multiple times
-    /*if(stopIntervalId !== undefined) {
-        clearInterval(stopIntervalId);
-    }*/
-    carry = 0;    
-    nowDate = new Date();
-    stopIntervalId = setInterval(updateTime, 10);
-}
- 
-//pause the watch
-function stopWatch() {
-    clearInterval(stopIntervalId);
-}
- 
-//reset watch to 00
-function resetWatch() {
-    carry = 0;
-    clearInterval(stopIntervalId);
-    milliseconds.innerText = "00";
-    secondsEl.innerText = "00";
-    minutesEl.innerText = "00";
-    hoursEl.innerText = "00";
-}
- 
- 
-//format time to look better even there is one digit
-function formatTime(time) {
-    return time < 10 ? `0${time}` : time;
-}
+
+    window.resetFunc = function () {
+        if (running) {
+            stopTimer();
+            running = false;
+        }
+        startTime = null;
+        elapsedTime = 0;
+        updateDisplay();
+        animateCircle();
+        $('#laps').empty();
+        lapCount = 1;
+    };
+});
+
